@@ -11,19 +11,17 @@ const next = (data, i) => {
 	let last = null;
 
 	for(; i < data.length; i++) {
-		const coordinate = new Coordinate(data[i].lat, data[i].lng);
-
 		if(last !== null && data[i].time - last.time > MAX_GAP) {
 			break;
 		}
 
-		if(last !== null) traveled += last.coordinate.distance(coordinate);
+		if(last !== null) traveled += Coordinate.distance(last, data[i]);
 		
 		travel.push(traveled);
 
 		routeData.push({
-			lat: Number(coordinate.lat),
-			lng: Number(coordinate.lng),
+			lat: Number(data[i].lat),
+			lng: Number(data[i].lng),
 			course: Number(data[i].course),
 			time: Number(data[i].time),
 			lasttime: Number(data[i].lasttime),
@@ -31,7 +29,6 @@ const next = (data, i) => {
 		});
 
 		last = data[i];
-		last.coordinate = coordinate;
 	}
 	
 	if(routeData.length == 0) return {i, route: null};

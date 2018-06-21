@@ -2,111 +2,11 @@ import React from 'react';
 import { GoogleApiWrapper } from 'google-maps-react';
 import MapContainer from './MapContainer';
 import RouteInfo from './RouteInfo';
+import Slider from './Slider';
 import convertToRoutes from './convertToRoutes';
 import { format } from 'date-fns';
 
 const embed = %embed%;
-
-class Slider extends React.Component {
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			min: props.min,
-			max: props.max,
-			value: props.min,
-			valueInt: props.min,
-			lastValueInt: props.min,
-			mouseDown: false,
-			mouseDownX: 0
-		};
-	}
-
-	componentDidMount() {
-		document.addEventListener('mouseup', this.onMouseUp.bind(this));
-		document.addEventListener('mousemove', this.onMouseMove.bind(this));
-	}
-
-	componentWillUnmount() {
-		document.removeEventListener('mouseup', this.onMouseUp.bind(this));
-		document.removeEventListener('mousemove', this.onMouseMove.bind(this));
-	}
-
-	onMouseUp(e) {
-
-		this.setState({mouseDown: false});
-	}
-
-	onMouseMove(e) {
-		if(this.state.mouseDown) {
-			const { clientX: x } = e;
-			const { left, width } = this.container.getBoundingClientRect(); 
-
-			const p = (x - left) / width;
-
-			let value = (this.state.max - this.state.min) * p;
-
-			if(value < this.state.min) value = this.state.min;
-			else if(value > this.state.max) value = this.state.max;
-
-			const valueInt = Math.round(value);
-
-			this.setState({
-				lastValueInt: this.state.valueInt,
-				value,
-				valueInt
-			}, () => {
-				if(this.props.onSlide) {
-					if(this.state.valueInt !== this.state.lastValueInt) {
-						this.props.onSlide(this.state.valueInt);
-					}
-				}
-			});
-		}
-	}
-
-	defaultTrack() {
-		return props => (
-			<div style={{backgroundColor: '#aaa', height: props.height}}></div>
-		);
-	}
-
-	render() {
-		const height = 15;
-		const Track = this.props.track || this.defaultTrack();
-
-		const vp = this.state.value / (this.state.max - this.state.min);
-
-		const style = {
-			container: {
-				height: height
-			},
-			handle: {
-				width: 16,
-				height: height + 6,
-				backgroundColor: '#ccc',
-				position: 'relative',
-				borderRadius: 5,
-				top: -height - 3,
-				left: (vp * 100) + '%',
-				marginLeft: -8
-			}
-		};
-
-		return (
-			<div style={Object.assign({}, style.container, this.props.style)} ref={ref => this.container = ref}>
-				<Track height={height} />
-
-				<div
-					style={style.handle}
-					onMouseDown={e => this.setState({mouseDown: true})}
-				>
-
-				</div>
-			</div>
-		);
-	}
-}
 
 class GpsVisualizer extends React.Component {
 	constructor(props) {
@@ -123,7 +23,13 @@ class GpsVisualizer extends React.Component {
 		this.state = {
 			bounds: null,
 			routeCollection: routeCollection,
-			polylines: routeCollection.routes.map(r => r.getPolyline())
+			polylines: routeCollection.routes.map(r => r.polyline),
+			activeRoute: 0,
+			markerPosition: {
+				lat: routeCollection.firstPoint.lat,
+				lng: routeCollection.firstPoint.lng
+			},
+			markerRotation: 0
 		};
 	}
 
@@ -146,35 +52,63 @@ class GpsVisualizer extends React.Component {
 		return `${from} - ${to}  / ${km.toFixed(2)} km`;
 	}
 
+	setActiveRoute(index) {
+		if(index !== this.state.activeRoute) {
+			this.setState({activeRoute: index});
+		}
+	}
+
+	setMarkerAtRoute(index, pos) {
+		const route = this.state.routeCollection.routes[index];
+		const path = route.data[pos];
+
+		this.setState({
+			markerPosition: {
+				lat: path.lat,
+				lng: path.lng
+			},
+			markerRotation: path.course
+		});
+	}
+
 	render() {
+		const { routeCollection } = this.state;
 		const title = this._generateTitle();
 
 		const parts = [];
-
 		let remaining = 100;
-		for(const route of this.state.routeCollection.routes) {
-			const p = Math.ceil(route.count / this.state.routeCollection.totalCount * 100);
+
+		for(let i = 0; i < routeCollection.routes.length - 1; i++) {
+			const route = routeCollection.routes[i];
+			const p = route.count / routeCollection.totalCount * 100;
 
 			parts.push({
-				width:  Math.min(p, remaining) + '%',
-				background: route.color
+				width:  Math.min(p, remaining),
+				color: route.color
 			});
 
 			remaining -= p;
 		}
 
-		const track = props => <div style={{height: props.height}}>
-					{
-						parts.map((p, i) => (
-							<div key={i} style={{
-								width: p.width,
-								height: '100%',
-								float: 'left',
-								background: p.background
-							}}></div>
-						))
-					}
-				</div>;
+		parts.push({
+			width: remaining,
+			color: routeCollection.lastRoute.color
+		});
+
+		const track = props => (
+			<div style={{height: props.height}}>
+				{
+					parts.map((p, i) => (
+						<div key={i} style={{
+							width: p.width + '%',
+							height: '100%',
+							float: 'left',
+							background: p.color
+						}}></div>
+					))
+				}
+			</div>
+		);
 
 		return <div>
 				<h5>{title}</h5>
@@ -183,10 +117,13 @@ class GpsVisualizer extends React.Component {
 					track={track}
 					style={{width: 400, marginBottom: 10}}
 					min={0}
-					max={100}
+					max={routeCollection.totalCount - 1}
 					onSlide={val => {
-						console.log(val);
+						const index = routeCollection.findRouteIndexByPathIndex(val);
+
+						this.setActiveRoute(index);						
 					}}
+					ref={ref => this.slider = ref}
 				/>
 
 				<div style={{clear: 'both'}}>
@@ -195,8 +132,20 @@ class GpsVisualizer extends React.Component {
 						ref={ref => this.map = ref}
 						bounds={this.state.bounds}
 						polylines={this.state.polylines}
+						markerPosition={this.state.markerPosition}
+						markerRotation={this.state.markerRotation}
+						activeRoute={this.state.activeRoute}
 					/>
-					<RouteInfo routes={this.state.routeCollection} />
+					<RouteInfo
+						routes={routeCollection}
+						activeRoute={this.state.activeRoute}
+						onClick={index => {
+							this.setActiveRoute(index);
+							this.setMarkerAtRoute(index, 0);
+
+							this.slider.setValue(routeCollection.findRoutePathStartIndex(index));
+						}}
+					/>
 				</div>
 			</div>;
 	}

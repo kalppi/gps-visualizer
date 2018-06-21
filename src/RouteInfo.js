@@ -20,7 +20,20 @@ export default class RouteInfo extends React.Component {
 			<ol style={style}>
 				{
 					this.props.routes.routes.map((r, i) => (
-						<li key={i} style={{fontFamily: 'Arial', fontSize: '10pt'}}>
+						<li
+							key={i}
+							style={Object.assign({},
+								{fontFamily: 'Arial', fontSize: '10pt', padding: 3},
+								i === this.props.activeRoute ? {backgroundColor: '#eee'} : null
+							)}
+							className={i === this.props.activeRoute ? 'active' : null}
+							onClick={() => {
+									if(this.props.onClick) {
+										this.props.onClick(i);
+									}
+								}
+							}
+						>
 							<div style={{display: 'inline-block', backgroundColor: r.color, width: 13, height: 13}}></div>
 							<div style={{display: 'inline-block', marginLeft: 5}}>
 								{r.toString()}

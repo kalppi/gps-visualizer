@@ -1,3 +1,5 @@
+import Coordinate from './Coordinate';
+
 export default class RouteCollection {
 	constructor(routes) {
 		this._routes = routes;
@@ -28,6 +30,10 @@ export default class RouteCollection {
 	get lastPoint() {
 		const l = this._routes[this._routes.length - 1];
 		return l.data[l.data.length - 1];
+	}
+
+	get lastRoute() {
+		return this._routes[this.routes.length - 1];
 	}
 
 	getBounds() {
@@ -66,17 +72,25 @@ export default class RouteCollection {
 		};
 	}
 
-	findRoutePointSliderValue(r, p) {
-		let s = 0;
-
-		for(let i = 0; i < this._routes.length; i++) {
-			for(let j = 0; j < this._routes[i].count; j++) {
-				if(i == r && j == p) {
-					return s;
-				}
-				
-				s++;
+	findRouteIndexByPathIndex(index) {
+		for(var i = 0, a = 0; i < this._routes.length; i++) {
+			if(a + this.routes[i].count > index) {
+				break;
 			}
+			
+			a += this.routes[i].count;
+		}
+
+		return i;
+	}
+
+	findRoutePathStartIndex(r) {
+		for(let i = 0, s = 0; i < this._routes.length; i++) {
+			if(r == i) {
+				return s;
+			}
+
+			s += this._routes[i].count;
 		}
 		
 		return null;
@@ -92,7 +106,7 @@ export default class RouteCollection {
 						route: i,
 						point: j,
 						slider: s,
-						position: new google.maps.LatLng(this._routes[i].data[j].lat, this._routes[i].data[j].lng)
+						position: {lat: this._routes[i].data[j].lat, lng: this._routes[i].data[j].lng}
 					};
 				}
 				
@@ -111,11 +125,11 @@ export default class RouteCollection {
 
 		const path = (smooth ? 'smoothPath' : 'data'); 
 
-		let min = LatLng.distance(this._routes[0][path][0], p);
+		let min = Coordinate.distance(this._routes[0][path][0], p);
 		
 		for(let i = 0; i < this._routes.length; i++) {
 			for(let j = 0; j < this._routes[i][path].length; j++) {
-				const d = LatLng.distance(this._routes[i][path][j], p);
+				const d = Coordinate.distance(this._routes[i][path][j], p);
 
 				if(d < min) {
 					min = d;

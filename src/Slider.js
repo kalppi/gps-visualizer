@@ -15,6 +15,13 @@ export default class Slider extends React.Component {
 		};
 	}
 
+	setValue(value) {
+		if(value < this.state.min) value = this.state.min;
+		else if(value > this.state.max) value = this.state.max;
+
+		this.setState({ value });
+	}
+
 	componentDidMount() {
 		document.addEventListener('mouseup', this.onMouseUp.bind(this));
 		document.addEventListener('mousemove', this.onMouseMove.bind(this));
@@ -82,7 +89,8 @@ export default class Slider extends React.Component {
 				borderRadius: 5,
 				top: -height - 3,
 				left: (vp * 100) + '%',
-				marginLeft: -8
+				marginLeft: -8,
+				opacity:0.5
 			}
 		};
 

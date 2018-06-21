@@ -71,12 +71,12 @@ import GpsVisualizer from 'GpsVisualizer';
 
 ## Data format
 
-Dataset is a json array of objects that have required fields `time` (unix timestamp), `lat` and `lng`.
+Dataset is a json array of objects that have required fields `time` (unix timestamp), `lat`. `lng`. Optional field `course` (degree).
 
 ```js
 [
-    { "time": 1499092463, "lat":"61.52098","lng":"28.17620" },
-    { "time": 1499094179, "lat":"61.52058","lng":"28.17618" },
+    { "time": 1499092463, "lat":"61.52098","lng":"28.17620", "course": 321 },
+    { "time": 1499094179, "lat":"61.52058","lng":"28.17618", "course": 323 },
     // ...
 ]
 ```

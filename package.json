@@ -26,10 +26,10 @@
   "dependencies": {
     "date-fns": "^2.0.0-alpha.10",
     "google-maps-react": "^2.0.2",
-    "react": "^15.0.1",
-    "react-dom": "^15.0.0"
+    "react": "^16.4.1"
   },
   "devDependencies": {
+    "react-dom": "^16.4.0",
     "@babel/core": "^7.0.0-beta.51",
     "@babel/preset-env": "^7.0.0-beta.51",
     "@babel/preset-react": "^7.0.0-beta.51",

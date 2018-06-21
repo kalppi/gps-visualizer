@@ -1,6 +1,8 @@
 import React from 'react';
-import { Map, Polyline } from 'google-maps-react';
-import { Slider } from './Slider';
+import { Map, Polyline, Marker } from 'google-maps-react';
+
+const options = {strokeOpacity: 0.3, strokeWeight: 2};
+const activeOptions = {strokeOpacity: 1, strokeWeight: 3};
 
 export default class MapContainer extends React.Component {
 	constructor(props) {
@@ -31,18 +33,26 @@ export default class MapContainer extends React.Component {
 				bounds={this.props.bounds}
 			>
 				{
-					this.props.polylines.map(group => (
+					this.props.polylines.map((group, gi) => (
 						group.lines.map((p, i) => (
 							<Polyline
-								key={i}
+								key={`${group.route.key}.${i}.${gi === this.props.activeRoute}`}
 								path={p.path}
 								strokeColor={p.strokeColor}
-								strokeOpacity={group.options.strokeOpacity}
-								strokeWeight={group.options.strokeWeight}
+								{... (gi === this.props.activeRoute ? activeOptions : options) }
 							/>
 						))
 					))
 				}
+
+				<Marker
+					position={this.props.markerPosition}
+					icon={{
+						path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+						scale: 4,
+						rotation: this.props.markerRotation
+					}}
+				/>
 			</Map>
 		);
 	}

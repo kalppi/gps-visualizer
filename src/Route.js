@@ -1,44 +1,35 @@
 import smooth from './smooth';
 import { format } from 'date-fns'; 
 
-const lineOptions = {strokeOpacity: 0.3, strokeWeight: 2};
-const selectedLineOptions = {strokeOpacity: 1, strokeWeight: 3};
+const speed_coloring = true;
 
 class PolylineGroup {
-	constructor(lines, options) {
+	constructor(route, lines) {
+		this._route = route;
 		this._lines = lines;
-		this._options = options;
+	}
+
+	get route() {
+		return this._route;
 	}
 
 	get lines() {
 		return this._lines;
 	}
-
-	get options() {
-		return this._options;
-	}
-
-	set options(opts) {
-		this._options = opts;
-	}
 }
 
 class Polyline {
-	constructor(line, options) {
+	constructor(route, line) {
+		this._route = route;
 		this._line = line;
-		this._options = options;
+	}
+
+	get route() {
+		return this._route;
 	}
 
 	get lines() {
 		return [this._line];
-	}
-
-	get options() {
-		return this._options;
-	}
-
-	set options(opts) {
-		this._options = opts;
 	}
 }
 
@@ -68,7 +59,19 @@ export default class Route {
 		return text;
 	}
 
-	getPolyline(speed_coloring = true) {
+	get key() {
+		return `${this.data[0].time}.${this.data[this.data.length - 1].time}`
+	}
+
+	get polyline() {
+		if(!this._polyline) {
+			this._polyline = this._generatePolyline();
+		}
+
+		return this._polyline;
+	}
+
+	_generatePolyline() {
 		const path = this.smoothPath;
 
 		const getColor = speed => {
@@ -100,10 +103,7 @@ export default class Route {
 				});
 			}
 
-			return new PolylineGroup(polylines, {
-				strokeOpacity: lineOptions.strokeOpacity,
-				strokeWeight: lineOptions.strokeWeight
-			});
+			return new PolylineGroup(this, polylines);
 		} else {
 			const gPath = [];
 
@@ -111,12 +111,9 @@ export default class Route {
 				gPath.push({lat: path[j].lat, lng: path[j].lng});
 			}
 
-			return new Polyline({
+			return new Polyline(this, {
 				path: gPath,
 				strokeColor: '#FF0000'
-			}, {
-				strokeOpacity: lineOptions.strokeOpacity,
-				strokeWeight: lineOptions.strokeWeight,
 			});
 		}
 	}
