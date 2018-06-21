@@ -20,7 +20,6 @@ export default class MapContainer extends React.Component {
 			|| this.props.markerPosition.lng !== nextProps.markerPosition.lng
 			|| this.props.markerRotation !== nextProps.markerRotation) {
 
-
 			this._updateMarker(nextProps);
 			return false;
 		}

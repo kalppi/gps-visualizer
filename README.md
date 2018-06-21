@@ -44,7 +44,7 @@ import GpsVisualizer from 'GpsVisualizer';
 </html>
 ```
 
-### Building with embeded dataset
+### Building with embedded dataset
 
 ```bash
 > GPS_DATA=./path/to/data.json npm run build-standalone
