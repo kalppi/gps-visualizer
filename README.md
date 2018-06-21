@@ -1,6 +1,6 @@
 # gps-visualizer
 
-Parses coordinates and times into separate journeys and visualizes them. Can be used as a react component, or build as standalone.
+Parses coordinate and time data into separate journeys and visualizes them. Can be used as a react component, or built as standalone.
 
 ## Using as a react component
 
@@ -8,10 +8,10 @@ Parses coordinates and times into separate journeys and visualizes them. Can be 
 import GpsVisualizer from 'GpsVisualizer';
 
 <GpsVisualizer
-	data={./* .. */ }
-	options={{
-		apiKey: // ...
-	}}
+    data={/* .. */ }
+    options={{
+        apiKey: // ...
+    }}
 />
 ```
 
@@ -29,13 +29,13 @@ import GpsVisualizer from 'GpsVisualizer';
     <head>
         <script src="gps-visualizer.js" type="text/javascript"></script>
         <script>
-        	function init() {
-        		const data = // ...
+            function init() {
+                const data = // ...
 
-				gpsVisualizer(document.getElementById('visualizer'), data, {
-					apiKey: // ...
-				});
-			}
+                gpsVisualizer(document.getElementById('visualizer'), data, {
+                    apiKey: // ...
+                });
+            }
         </script>
     </head>
     <body onload="init()">
@@ -56,11 +56,11 @@ import GpsVisualizer from 'GpsVisualizer';
     <head>
         <script src="gps-visualizer.js" type="text/javascript"></script>
         <script>
-        	function init() {
-				gpsVisualizer(document.getElementById('visualizer'), null, {
-					apiKey: // ...
-				});
-			}
+            function init() {
+                gpsVisualizer(document.getElementById('visualizer'), null, {
+                    apiKey: // ...
+                });
+            }
         </script>
     </head>
     <body onload="init()">
@@ -73,10 +73,10 @@ import GpsVisualizer from 'GpsVisualizer';
 
 Dataset is a json array of objects that have required fields `time` (unix timestamp), `lat` and `lng`.
 
-```json
+```js
 [
-	{ "time": 1499092463, "lat":"61.52098","lng":"28.17620" },
-	{ "time": 1499094179, "lat":"61.52058","lng":"28.17618" },
-	// ...
+    { "time": 1499092463, "lat":"61.52098","lng":"28.17620" },
+    { "time": 1499094179, "lat":"61.52058","lng":"28.17618" },
+    // ...
 ]
 ```
