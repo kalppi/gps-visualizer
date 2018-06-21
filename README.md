@@ -1,8 +1,8 @@
 # gps-visualizer
 
-Parses coordinate and time data into separate journeys and visualizes them. Can be used as a react component, or built as standalone.
+Parses coordinate and time data into separate journeys and visualizes them. Can be used as a React component, or built as standalone.
 
-## Using as a react component
+## Using as a React component
 
 ```js
 import GpsVisualizer from 'GpsVisualizer';
