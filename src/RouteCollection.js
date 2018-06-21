@@ -95,6 +95,18 @@ export default class RouteCollection {
 		
 		return null;
 	}
+
+	findPath(p) {
+		for(let i = 0, a = 0; i < this.routes.length; i++) {
+			if(a + this.routes[i].count > p) {
+				return this.routes[i].data[ p - a];
+			}
+			
+			a += this.routes[i].count;
+		}
+
+		return null;
+	}
 			
 	findCoordinateFromTime(time) {
 		let s = 0;

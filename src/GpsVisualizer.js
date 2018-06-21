@@ -71,6 +71,18 @@ class GpsVisualizer extends React.Component {
 		});
 	}
 
+	setMarkerAtPath(index) {
+		const path = this.state.routeCollection.findPath(index);
+
+		this.setState({
+			markerPosition: {
+				lat: path.lat,
+				lng: path.lng
+			},
+			markerRotation: path.course
+		});
+	}
+
 	render() {
 		const { routeCollection } = this.state;
 		const title = this._generateTitle();
@@ -121,7 +133,8 @@ class GpsVisualizer extends React.Component {
 					onSlide={val => {
 						const index = routeCollection.findRouteIndexByPathIndex(val);
 
-						this.setActiveRoute(index);						
+						this.setActiveRoute(index);
+						this.setMarkerAtPath(val)
 					}}
 					ref={ref => this.slider = ref}
 				/>

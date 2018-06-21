@@ -89,8 +89,7 @@ export default class Slider extends React.Component {
 				borderRadius: 5,
 				top: -height - 3,
 				left: (vp * 100) + '%',
-				marginLeft: -8,
-				opacity:0.5
+				marginLeft: -8
 			}
 		};
 
