@@ -8,7 +8,7 @@ Parses coordinate and time data into separate journeys and visualizes them. Can 
 import GpsVisualizer from 'GpsVisualizer';
 
 <GpsVisualizer
-    data={/* .. */ }
+    data={ /* .. */ }
     options={{
         apiKey: // ...
     }}
