@@ -9,31 +9,33 @@ export default class MapContainer extends React.Component {
 		super(props);
 	}
 
-	componentDidMount() {
-		setTimeout(() => {
-			this.marker.marker.setPosition(this.props.markerPosition);
-		}, 0)
-	}
-
 	// optimization, let's not create a new marker every time it changes, but update the
 	// existing one
 	shouldComponentUpdate(nextProps) {
+		if(this.props.activeRoute !== nextProps.activeRoute) {
+			return true;
+		}
+
 		if(this.props.markerPosition.lat !== nextProps.markerPosition.lat
 			|| this.props.markerPosition.lng !== nextProps.markerPosition.lng
 			|| this.props.markerRotation !== nextProps.markerRotation) {
 
-				this.marker.marker.setPosition(nextProps.markerPosition);
-			
-				this.marker.marker.setIcon({ 
-					path: this.marker.marker.icon.path,
-					scale: this.marker.marker.icon.scale,
-					rotation: Number(nextProps.markerRotation)
-				});
 
+			this._updateMarker(nextProps);
 			return false;
 		}
 
 		return true;
+	}
+
+	_updateMarker(props) {
+		this.marker.marker.setPosition(props.markerPosition);
+		
+		this.marker.marker.setIcon({ 
+			path: this.marker.marker.icon.path,
+			scale: this.marker.marker.icon.scale,
+			rotation: Number(props.markerRotation)
+		});
 	}
 
 	render() {
@@ -75,8 +77,10 @@ export default class MapContainer extends React.Component {
 				<Marker
 					icon={{
 						path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-						scale: 4
+						scale: 4,
+						rotation: Number(this.props.markerRotation)
 					}}
+					position={this.props.markerPosition}
 					ref={ref => this.marker = ref}
 				/>
 			</Map>
