@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Gps Visualizer standalone</title>
+
+        <script src="gps-visualizer.js" type="text/javascript"></script>
+        <script>
+        	const data = %data%;
+
+        	function init(){
+				gpsVisualizer(document.getElementById('app'), data, {
+					apiKey: %apiKey%
+				});
+			}
+        </script>
+    </head>
+    <body onload="init()">
+        <div id="app"></div>
+    </body>
+</html>

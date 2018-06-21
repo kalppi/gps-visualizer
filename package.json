@@ -1,0 +1,52 @@
+{
+  "name": "gps-visualizer",
+  "version": "0.0.1",
+  "description": "",
+  "main": "builds/bundle.js",
+  "watch": {
+    "build": "src/*.js"
+  },
+  "scripts": {
+    "server": "node server.js",
+    "build": "webpack --config ./webpack.config.js",
+    "build-standalone": "webpack -p --config ./webpack.standalone.config.js",
+    "build-standalone-dev": "webpack --config ./webpack.standalone.dev.config.js",
+    "watch": "concurrently --kill-others 'npm-watch' 'npm run server'"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "Jarno Luukkonen <luukkonen.jarno@gmail.com> (http://jarnoluu.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": ""
+  },
+  "homepage": "",
+  "dependencies": {
+    "date-fns": "^2.0.0-alpha.10",
+    "google-maps-react": "^2.0.2",
+    "react": "^15.0.1",
+    "react-dom": "^15.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.51",
+    "@babel/preset-env": "^7.0.0-beta.51",
+    "@babel/preset-react": "^7.0.0-beta.51",
+    "babel-cli": "^6.5.0",
+    "babel-core": "^6.5.0",
+    "babel-loader": "^8.0.0-beta.3",
+    "babel-plugin-transform-runtime": "^6.5.0",
+    "babel-polyfill": "^6.5.0",
+    "babel-runtime": "^6.5.0",
+    "concurrently": "^3.6.0",
+    "dotenv": "^6.0.0",
+    "express": "^4.13.4",
+    "file-loader": "^1.1.11",
+    "npm-watch": "^0.3.0",
+    "string-replace-loader": "^2.1.1",
+    "uglifyjs-webpack-plugin": "^1.2.6",
+    "webpack": "^4.12.0",
+    "webpack-cli": "^3.0.8"
+  }
+}
